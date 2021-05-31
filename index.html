@@ -55,18 +55,113 @@
     <button>Trigger a Global Error</button>
   </section>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+  window.TrackJS && TrackJS.install({ 
+    token: "8e73ac50f5b54d55bf032949e7ce50d0"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+  </script>
+
+  <script>
+
+    class ZeroError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "DivideByZeroError";     
+      }
+    }
+
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+        if(secondNum == 0) {
+          //console.log('here');
+          throw new ZeroError("Zero!");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch(err) {
+        alert('Cannot divide by 0');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+
+    TrackJS.track('Testing TrackJS!');
+
+    // Console Log Demo Button
+    errorBtns[0].addEventListener('click', () => {
+      console.log('Console Log Demo');
+    });
+
+    // Console Log Error Button
+    errorBtns[1].addEventListener('click', () => {
+      console.error('Console Error Demo');
+    });
+
+    // Console Dir
+    errorBtns[2].addEventListener('click', ()=> {
+      console.dir(errorBtns[2]);
+    });
+
+    // Console Dirxml
+    errorBtns[3].addEventListener('click', ()=> {
+      console.dirxml(errorBtns[3]);
+    });
+
+    // Console Group Start
+    errorBtns[4].addEventListener('click', ()=> {
+      console.group();
+    });
+
+    // Console Group End
+    errorBtns[5].addEventListener('click', ()=> {
+      console.groupEnd();
+    });
+
+    // Console Group 
+    errorBtns[6].addEventListener('click', ()=> {
+      console.table(["Software Engineer", "Programming Languages", "Advanced Software Engineering"]);
+    });
+
+    // Start Timer
+    errorBtns[7].addEventListener('click', ()=> {
+      console.time();
+    });
+
+    // End Timer
+    errorBtns[8].addEventListener('click', ()=> {
+      console.timeEnd();
+    });
+
+    // Console Trace
+    errorBtns[9].addEventListener('click', ()=> {
+      function testTrace() {
+        function deep() {
+          function deeper() {
+            function deepest() {
+              console.trace();
+            }
+            deepest();
+          }
+          deeper();
+        }
+        deep();
+      }
+      testTrace();
+    });
+
+    // Trigger Global Error
+    errorBtns[10].addEventListener('click', ()=> {
+      window.onerror('broke', 'google.com', 5, 5, error);
+    });
+
+
   </script>
 </body>
 </html>
